@@ -106,7 +106,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.10</version>
 				<configuration>
-					<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.1-SNAPSHOT</imageName>
+					<imageName>dapengsoa/api-gateway:2.0.1-SNAPSHOT</imageName>
 					<dockerDirectory>${basedir}/docker</dockerDirectory>
 				</configuration>
 				<executions>
