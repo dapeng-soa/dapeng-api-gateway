@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
 
-    @PostMapping(value = "/{service}/{version}/{method}")
-    public String rest(@PathVariable(value = "service") String service,
-                       @PathVariable(value = "version") String version,
-                       @PathVariable(value = "method") String method,
+    @PostMapping
+    public String rest(@RequestParam(value = "service") String service,
+                       @RequestParam(value = "version") String version,
+                       @RequestParam(value = "method") String method,
                        @RequestParam(value = "parameter") String parameter,
                        HttpServletRequest req) {
         LOGGER.debug("api request :{}:{}:{}:{}", service, version, method, parameter);
