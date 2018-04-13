@@ -16,13 +16,13 @@ public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
 
     @PostMapping
-    public String rest(@RequestParam(value = "service") String service,
+    public String rest(@RequestParam(value = "serviceName") String serviceName,
                        @RequestParam(value = "version") String version,
-                       @RequestParam(value = "method") String method,
+                       @RequestParam(value = "methodName") String methodName,
                        @RequestParam(value = "parameter") String parameter,
                        HttpServletRequest req) {
-        LOGGER.debug("api request :{}:{}:{}:{}", service, version, method, parameter);
-        return PostUtil.post(service, version, method, parameter, req);
+        LOGGER.debug("api request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
 }
