@@ -5,7 +5,7 @@
 
 	<groupId>com.github.dapeng</groupId>
 	<artifactId>dapeng-api-gateway</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<packaging>war</packaging>
 
 	<name>dapeng-api-gateway</name>
@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<dapeng.version>2.0.1-SNAPSHOT</dapeng.version>
+		<dapeng.version>2.0.1</dapeng.version>
 	</properties>
 
 	<dependencies>
@@ -95,7 +95,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.10</version>
 				<configuration>
-					<imageName>dapengsoa/api-gateway:2.0.1-SNAPSHOT</imageName>
+					<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.1</imageName>
 					<dockerDirectory>${basedir}/docker</dockerDirectory>
 				</configuration>
 				<executions>
