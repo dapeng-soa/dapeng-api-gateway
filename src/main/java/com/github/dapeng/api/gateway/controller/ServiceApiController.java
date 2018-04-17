@@ -21,7 +21,17 @@ public class ServiceApiController {
                        @RequestParam(value = "methodName") String methodName,
                        @RequestParam(value = "parameter") String parameter,
                        HttpServletRequest req) {
-        LOGGER.debug("api request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
+        LOGGER.debug("api Params request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
+
+    @PostMapping(value = "/{serviceName}/{version}/{methodName}")
+    public String rest1(@PathVariable(value = "serviceName") String serviceName,
+                       @PathVariable(value = "version") String version,
+                       @PathVariable(value = "methodName") String methodName,
+                       @RequestParam(value = "parameter") String parameter,
+                       HttpServletRequest req) {
+        LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
