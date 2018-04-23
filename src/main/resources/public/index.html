@@ -13,6 +13,12 @@
     <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <script>
+    $(document).ready(function () {
+        var url = "http://" + this.location.host;
+        console.log(url);
+        $(".host-url").html(url);
+    });
+
     function postTest() {
         var serviceName = $("#serviceName").val();
         var version = $("#version").val();
@@ -21,20 +27,20 @@
         var jsonObj = {};
         try {
             jsonObj = JSON.parse(parameter)
-        }catch (e){
+        } catch (e) {
             alert("json格式异常请检查");
             return;
         }
         console.log(jsonObj);
         var url = "/api";
-        $.post(url,{
+        $.post(url, {
             serviceName: serviceName,
             version: version,
             methodName: methodName,
             parameter: JSON.stringify(jsonObj)
-        },function (result) {
+        }, function (result) {
             $("#result").val(JSON.stringify(result));
-        },"json");
+        }, "json");
     }
 </script>
 <body>
@@ -44,36 +50,40 @@
         <p>Api-服务网关,提供HTTP方式服务调用</p>
         <p>Api测试：</p>
         <div class="row">
-            <div style="width: 500px;margin: 0 auto">
-                <div class="form-group">
-                    <label for="serviceName">服务名(serviceName)</label>
-                    <input type="text" class="form-control" id="serviceName" placeholder="com.xxx.xxx.goodsService">
-                </div>
-                <div class="form-group">
-                    <label for="version">版本号(version)</label>
-                    <input type="text" class="form-control" id="version" placeholder="1.0.0">
-                </div>
-                <div class="form-group">
-                    <label for="methodName">接口名(methodName)</label>
-                    <input type="text" class="form-control" id="methodName" placeholder="queryGoodsByPage">
-                </div>
-                <div class="form-group">
-                    <label for="parameter">接口参数(parameter)</label>
-                    <textarea class="form-control" id="parameter" rows="3" placeholder="请求json"></textarea>
-                </div>
-                <button type="button" onclick="postTest()" class="btn btn-primary">提交请求</button>
-                <div class="form-group">
-                    <label for="parameter">接口返回</label>
-                    <textarea class="form-control" id="result" rows="5"></textarea>
+            <div style="width: 600px;margin: 0 auto">
+                <div style="margin: auto 50px;">
+                    <div class="form-group">
+                        <label for="serviceName">服务名(serviceName)</label>
+                        <input type="text" class="form-control" id="serviceName" placeholder="com.xxx.xxx.goodsService">
+                    </div>
+                    <div class="form-group">
+                        <label for="version">版本号(version)</label>
+                        <input type="text" class="form-control" id="version" placeholder="1.0.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="methodName">接口名(methodName)</label>
+                        <input type="text" class="form-control" id="methodName" placeholder="queryGoodsByPage">
+                    </div>
+                    <div class="form-group">
+                        <label for="parameter">接口参数(parameter)</label>
+                        <textarea class="form-control" id="parameter" rows="3" placeholder="请求json"></textarea>
+                    </div>
+                    <button type="button" onclick="postTest()" class="btn btn-primary">提交请求</button>
+                    <div class="form-group">
+                        <label for="parameter">接口返回</label>
+                        <textarea class="form-control" id="result" rows="5"></textarea>
+                    </div>
                 </div>
                 <div class="text-left">
                     <p>备注:</p>
                     <ul>
                         <li>Api-GateWay在调用时有两种请求方式</li>
-                        <li>第一种：<code>url/api</code></li>
-                        <li>参数：<code>serviceName,version,methodName,parameter</code></li>
-                        <li>第二种：<code>url/api/{serviceName}/{version}/{methodName}</code></li>
-                        <li>参数：<code>parameter</code></li>
+                        <li>第一种：<br><code>
+                            <sapn class="host-url"></sapn>/api</code></li>
+                        <li>参数：<br><code>serviceName,version,methodName,parameter</code></li>
+                        <li>第二种：<br><code>
+                            <sapn class="host-url"></sapn>/api/{serviceName}/{version}/{methodName}</code></li>
+                        <li>参数：<br><code>parameter</code></li>
                     </ul>
                 </div>
             </div>
