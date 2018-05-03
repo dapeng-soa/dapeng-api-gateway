@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <consumer>
+
     <endpoint>
         <id>1</id>
         <groupId>phpConsumer1</groupId>
@@ -9,8 +10,7 @@
         <service>com.today.api.member.service.MemberService</service>
         <version>1.0.0</version>
         <event>com.today.api.member.events.MemberRegisterByWechatOpenIdEvent</event>
-        <uri>http://10.10.10.12/api/dapeng/member/register</uri>
-        <!--<uri>http://127.0.0.1:8989/http</uri>-->
+        <uri>http://10.10.10.12/api/dapeng/subscribe/index</uri>
     </endpoint>
 
     <endpoint>
@@ -22,7 +22,6 @@
         <service>com.today.api.order.service.OrderService</service>
         <version>1.0.0</version>
         <event>com.today.api.order.events.StoreOrderEndEvent</event>
-        <uri>http://10.10.10.12/api/market/marketact/sendCoupon</uri>
-        <!--<uri>http://127.0.0.1:8989/http</uri>-->
+        <uri>http://10.10.10.12/api/dapeng/subscribe/index</uri>
     </endpoint>
 </consumer>
