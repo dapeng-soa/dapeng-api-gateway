@@ -2,6 +2,7 @@ package com.github.dapeng.api.gateway;
 
 import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
 import com.github.dapeng.openapi.cache.ZkBootstrap;
+import com.today.eventbus.spring.MsgAnnotationBeanPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,6 @@ public class ApiGatewayApplication implements CommandLineRunner {
         }
         new ZkBootstrap().init();
     }
+
+
 }
