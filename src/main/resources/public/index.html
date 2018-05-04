@@ -17,6 +17,18 @@
         var serviceName = $("#serviceName").val();
         var version = $("#version").val();
         var methodName = $("#methodName").val();
+        if(serviceName.trim()===""){
+            alert("服务名不能为空");
+            return;
+        }
+        if(version.trim()===""){
+            alert("版本号不能为空");
+            return;
+        }
+        if(methodName.trim()===""){
+            alert("接口名不能为空");
+            return;
+        }
         var parameter = $("#parameter").val();
         var jsonObj = {};
         try {
@@ -25,7 +37,6 @@
             alert("json格式异常请检查");
             return;
         }
-        console.log(jsonObj);
         var url = "/api";
         $.post(url,{
             serviceName: serviceName,
