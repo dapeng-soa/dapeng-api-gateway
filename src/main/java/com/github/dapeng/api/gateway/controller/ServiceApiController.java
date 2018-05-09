@@ -1,11 +1,17 @@
 package com.github.dapeng.api.gateway.controller;
 
+import com.github.dapeng.core.metadata.Service;
+import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author struy
@@ -33,6 +39,18 @@ public class ServiceApiController {
                        HttpServletRequest req) {
         LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
+
+    @GetMapping(value = "/list")
+    public ResponseEntity<?> list() {
+        Map<String, Service> services = ServiceCache.getServices();
+        List<String> list = new ArrayList(16);
+        services.forEach((k, v) -> {
+            list.add(v.namespace + "." + v.name + ":" + v.meta.version);
+        });
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(list);
     }
 
 }
