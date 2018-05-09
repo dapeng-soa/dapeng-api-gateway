@@ -23,17 +23,13 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<dapeng.version>2.0.2-SNAPSHOT</dapeng.version>
+		<admin-api.version>0.3-SNAPSHOT</admin-api.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!-- spring boot jpa -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<!--open-api -->
 		<dependency>
@@ -53,16 +49,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.36</version>
+			<groupId>com.today</groupId>
+			<artifactId>admin-api_2.12</artifactId>
+			<version>${admin-api.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.0.17</version>
-		</dependency>
 	</dependencies>
 
 	<build>
