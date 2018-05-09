@@ -1,8 +1,5 @@
 package com.github.dapeng.api.gateway.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
@@ -11,11 +8,8 @@ import java.sql.Timestamp;
  * email :yq1724555319@gmail.com
  */
 
-@Entity
-@Table(name = "auth_info")
 public class AuthInfo {
 
-    @Id
     private int id;
     /**
      * 鉴权key

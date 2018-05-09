@@ -1,11 +1,10 @@
 package com.github.dapeng.api.gateway.controller;
 
-import com.github.dapeng.api.gateway.dto.AuthInfo;
 import com.github.dapeng.api.gateway.dto.CacheAuth;
-import com.github.dapeng.api.gateway.repository.GateWayRepository;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
+import com.today.api.admin.AdminServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,9 @@ import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
 @RequestMapping("api")
 public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
-    private static Map<String, CacheAuth> cacheAuthMap = new ConcurrentHashMap<>(1);
+    private static Map<String, CacheAuth> cacheAuthMap = new ConcurrentHashMap<>(16);
 
-    @Autowired
-    GateWayRepository gateWayRepository;
+    AdminServiceClient adminServiceClient = new AdminServiceClient();
 
     @PostMapping
     public String rest(@RequestParam(value = "serviceName") String serviceName,
@@ -61,24 +59,16 @@ public class ServiceApiController {
         }
     }
 
-    @GetMapping(value = "/list/{authKey}")
-    public ResponseEntity<?> list(@PathVariable(value = "authKey") String authKey) {
-
-        if (checkAuthKey(authKey)) {
-            Map<String, Service> services = ServiceCache.getServices();
-            List<String> list = new ArrayList(16);
-            services.forEach((k, v) -> {
-                list.add(v.namespace + "." + v.name + ":" + v.meta.version);
-            });
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(list);
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("Check permissions");
-        }
-
+    @GetMapping(value = "/list")
+    public ResponseEntity<?> list() {
+        Map<String, Service> services = ServiceCache.getServices();
+        List<String> list = new ArrayList(16);
+        services.forEach((k, v) -> {
+            list.add(v.namespace + "." + v.name + ":" + v.meta.version);
+        });
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(list);
     }
 
     private Boolean checkAuthKey(String authKey) {
@@ -101,8 +91,9 @@ public class ServiceApiController {
     }
 
     private Boolean checkByDb(String authKey) {
+        // adminService
+        CacheAuth byAuthKey = new CacheAuth();
         // query db
-        AuthInfo byAuthKey = gateWayRepository.findByAuthKey(authKey);
         if (null != byAuthKey) {
             CacheAuth cacheAuth1 = new CacheAuth();
             cacheAuth1.setCacheTime(System.currentTimeMillis());
