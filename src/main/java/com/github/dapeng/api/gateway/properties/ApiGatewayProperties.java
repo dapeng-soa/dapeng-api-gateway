@@ -16,9 +16,7 @@ public class ApiGatewayProperties {
 
     public static final String PROP_SOA_ZOOKEEPER_HOST = "soa.zookeeper.host";
 
-    public static final String AUTH_CACHE_KEY = "auth_key";
-
-    public static final Long AUTH_CACHE_TIMEOUT = 10 * 60 * 1000L;
+    public static final String TOKEN_SPLIT_KEY = "@##@";
 
     private String host;
 
