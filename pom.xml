@@ -46,6 +46,15 @@
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 		</dependency>
+
+        <!--eventbus-->
+        <dependency>
+            <groupId>com.today</groupId>
+            <artifactId>event-bus_2.12</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -95,7 +104,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.10</version>
 				<configuration>
-					<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.2</imageName>
+					<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.2-proxy</imageName>
 					<dockerDirectory>${basedir}/docker</dockerDirectory>
 				</configuration>
 				<executions>
