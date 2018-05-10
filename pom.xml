@@ -36,6 +36,11 @@
 			<artifactId>dapeng-open-api</artifactId>
 			<version>${dapeng.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.dapeng</groupId>
+			<artifactId>dapeng-core</artifactId>
+			<version>${dapeng.version}</version>
+		</dependency>
 		<!--servlet支持开启-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
