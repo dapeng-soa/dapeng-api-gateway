@@ -72,6 +72,7 @@ public class TokenUtil {
     private static Boolean checkRule(String ipRules) {
         /* 调用者真实ip */
         String invokeIp = InvokeUtil.getIpAddress();
+        LOGGER.debug("gateway invoke Ip:[{"+invokeIp+"}]");
         // 如果多个IP是否命中
         if (ipRules.contains(MULTIPLEIP_CUT_KEY)) {
             return ipRules.contains(invokeIp);
