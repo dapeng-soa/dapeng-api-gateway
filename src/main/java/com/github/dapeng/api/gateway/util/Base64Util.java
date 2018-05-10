@@ -53,7 +53,7 @@ public class Base64Util {
     }
 
     public static void main(String[] args) {
-        final String text = "test@##@"+System.currentTimeMillis();
+        final String text = "today-php-0001-example@##@"+System.currentTimeMillis();
         final String encodedText = encode(text);
         System.out.println(encodedText);
         System.out.println(decode(encodedText));
