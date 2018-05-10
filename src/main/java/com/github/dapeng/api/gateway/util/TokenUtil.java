@@ -49,9 +49,9 @@ public class TokenUtil {
 
                     if (null == ipRules) {
                         // 通过adminService获取对应的规则
-                        return chekApiKeyInfoByService(apiKey, adminService);
+                        return chekApiKeyInfoByService(apiKey, adminService) && !timeouted;
                     }
-                    return checkRule(ipRules) && timeouted;
+                    return checkRule(ipRules) && !timeouted;
                 } else {
                     return false;
                 }
