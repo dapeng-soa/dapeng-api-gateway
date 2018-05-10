@@ -5,6 +5,7 @@ import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
 import com.today.api.admin.AdminServiceClient;
+import com.today.api.admin.OpenAdminServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,7 @@ import java.util.Map;
 @RequestMapping("api")
 public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
-
-    AdminServiceClient adminServiceClient = new AdminServiceClient();
+    private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
 
     @PostMapping
     public String rest(@RequestParam(value = "serviceName") String serviceName,
@@ -32,7 +32,7 @@ public class ServiceApiController {
                        @RequestParam(value = "parameter") String parameter,
                        @RequestParam(value = "token") String token,
                        HttpServletRequest req) {
-        if (TokenUtil.checkToken(token)) {
+        if (TokenUtil.checkToken(token,adminService)) {
             LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
             return PostUtil.post(serviceName, version, methodName, parameter, req);
         } else {
@@ -47,7 +47,7 @@ public class ServiceApiController {
                         @RequestParam(value = "parameter") String parameter,
                         @RequestParam(value = "token") String token,
                         HttpServletRequest req) {
-        if (TokenUtil.checkToken(token)) {
+        if (TokenUtil.checkToken(token,adminService)) {
             LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
             return PostUtil.post(serviceName, version, methodName, parameter, req);
         } else {
