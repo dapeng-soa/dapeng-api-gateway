@@ -1,7 +1,5 @@
 package com.github.dapeng.api.gateway.util;
 
-
-import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.IPUtils;
 import com.today.api.admin.OpenAdminServiceClient;
@@ -24,43 +22,53 @@ public class TokenUtil {
     private static final String MULTIPLEIP_CUT_KEY = ",";
     private static final String MASK_CUT_KEY = "/";
     private static final String ANY_RULE_KEY = "*";
-    private static final Long TIMEOUT = 60000L;
     private static final String NOTFIND_CODE = "000000002";
-    // TODO 测试
-    private static final String DEFAULT_KEY = "test";
-    private static String apikey;
-    private static OpenAdminServiceClient adminService;
+    private static final String TOKEN_SPLIT_KEY = "@##@";
+    private static final Long TIMEOUT = 60000L;
 
+
+    /**
+     * 检查token是否合法
+     * @param token
+     * @param adminService
+     * @return
+     */
     public static Boolean checkToken(String token, OpenAdminServiceClient adminService) {
-        // TODO 测试
-        if (!cacheAuthMap.containsKey(DEFAULT_KEY)) {
-            cacheAuthMap.put(DEFAULT_KEY, ANY_RULE_KEY);
-        }
 
-        if (null != token) {
-            // token :apikey@##@timesteamp
-            String decodeToken = Base64Util.decode(token);
-            if (null != decodeToken && decodeToken.contains(ApiGatewayProperties.TOKEN_SPLIT_KEY)) {
-                String[] tokentemp = decodeToken.split(ApiGatewayProperties.TOKEN_SPLIT_KEY);
-                String apiKey = tokentemp[0];
-                Long timesteamp = Long.valueOf(tokentemp[1]); // 毫秒值
-                boolean timeouted = (System.currentTimeMillis() - timesteamp) > TIMEOUT;
-                // 缓存中获取对应的规则
-                String ipRules = cacheAuthMap.get(apiKey);
+        try {
+            if (null != token) {
+                // token :apikey@##@timesteamp
+                String decodeToken = Base64Util.decode(token);
+                if (null != decodeToken && decodeToken.contains(TOKEN_SPLIT_KEY)) {
+                    String[] tokenTemp = decodeToken.split(TOKEN_SPLIT_KEY);
+                    String apiKey = tokenTemp[0];
+                    Long timesTeamp = Long.valueOf(tokenTemp[1]); // 毫秒值
+                    boolean timeouted = (System.currentTimeMillis() - timesTeamp) > TIMEOUT;
+                    // 缓存中获取对应的规则
+                    String ipRules = cacheAuthMap.get(apiKey);
 
-                if (null == ipRules) {
-                    // 通过adminService获取对应的规则
-                    return chekApiKeyInfoByService(apiKey, adminService);
+                    if (null == ipRules) {
+                        // 通过adminService获取对应的规则
+                        return chekApiKeyInfoByService(apiKey, adminService);
+                    }
+                    return checkRule(ipRules) && timeouted;
+                } else {
+                    return false;
                 }
-                return checkRule(ipRules) && timeouted;
             } else {
                 return false;
             }
-        } else {
+        } catch (Exception e) {
+            LOGGER.error(TokenUtil.class.getName() + "::check Token error ,token [" + token + "]", e);
             return false;
         }
     }
 
+    /**
+     * 检查规则是否符合
+     * @param ipRules
+     * @return
+     */
     private static Boolean checkRule(String ipRules) {
         /* 调用者真实ip */
         String invokeIp = InvokeUtil.getIpAddress();
@@ -81,9 +89,13 @@ public class TokenUtil {
         }
     }
 
+    /**
+     * 获取apiKeyInfo
+     * @param apikey
+     * @param adminService
+     * @return
+     */
     private static Boolean chekApiKeyInfoByService(String apikey, OpenAdminServiceClient adminService) {
-        TokenUtil.apikey = apikey;
-        TokenUtil.adminService = adminService;
         try {
             TApiKeyInfo apiKeyInfo = adminService.getGateWayApiKeyInfo(apikey);
             if (!cacheAuthMap.containsKey(apiKeyInfo.getApiKey())) {
@@ -92,7 +104,7 @@ public class TokenUtil {
             return checkRule(apiKeyInfo.getIpRule());
         } catch (SoaException e) {
             if (NOTFIND_CODE.equals(e.getCode())) {
-                LOGGER.info(TokenUtil.class.getName() + "::not find apiKey Info [" + apikey + "]", e);
+                LOGGER.info(e.getMsg(), e);
             } else {
                 LOGGER.error(TokenUtil.class.getName() + "::find apiKey info error [" + apikey + "]", e);
             }

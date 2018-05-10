@@ -16,8 +16,6 @@ public class ApiGatewayProperties {
 
     public static final String PROP_SOA_ZOOKEEPER_HOST = "soa.zookeeper.host";
 
-    public static final String TOKEN_SPLIT_KEY = "@##@";
-
     private String host;
 
 

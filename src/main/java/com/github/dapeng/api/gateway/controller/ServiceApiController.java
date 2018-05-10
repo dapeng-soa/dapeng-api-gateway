@@ -4,7 +4,6 @@ import com.github.dapeng.api.gateway.util.TokenUtil;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
-import com.today.api.admin.AdminServiceClient;
 import com.today.api.admin.OpenAdminServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
