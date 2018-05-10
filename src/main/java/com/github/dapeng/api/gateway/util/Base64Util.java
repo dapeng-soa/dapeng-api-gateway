@@ -51,14 +51,4 @@ public class Base64Util {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        final String text = "today-php-0001-example@##@"+System.currentTimeMillis();
-        final String encodedText = encode(text);
-        System.out.println(encodedText);
-        System.out.println(decode(encodedText));
-        Boolean ss = IPUtils.matchIpWithMask(IPUtils.transferIp("192.168.0.102"),IPUtils.transferIp("192.168.0.1"),24);
-        System.out.println(new Date());
-        System.out.println(ss);
-    }
 }
