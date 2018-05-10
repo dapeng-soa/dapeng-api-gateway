@@ -31,11 +31,10 @@ public class Base64Util {
             } else {
                 return null;
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             LOGGER.error(Base64Util.class.getName() + " :: base64 encode error", e);
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -47,15 +46,14 @@ public class Base64Util {
     public static String decode(String text) {
         try {
             return new String(DECODER.decode(text), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             LOGGER.error(Base64Util.class.getName() + " :: base64 decode error", e);
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public static void main(String[] args) {
-        final String text = "apiKey@##@timestamp";
+        final String text = "test@##@"+System.currentTimeMillis();
         final String encodedText = encode(text);
         System.out.println(encodedText);
         System.out.println(decode(encodedText));
