@@ -1,6 +1,7 @@
 package com.github.dapeng.api.gateway.controller;
 
 import com.github.dapeng.api.gateway.util.InvokeUtil;
+import com.github.dapeng.api.gateway.util.XmlUtil;
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
@@ -53,15 +54,15 @@ public class ServiceApiController {
 
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
-            @RequestParam(value = "serviceName") String serviceName,
-            @RequestParam(value = "version") String version,
-            @RequestParam(value = "methodName") String methodName,
-            @RequestParam(value = "parameter") String parameter,
-            @RequestParam(value = "timestamp") String timestamp,
-            @RequestParam(value = "secret") String secret,
-            HttpServletRequest req) {
+                           @RequestParam(value = "serviceName") String serviceName,
+                           @RequestParam(value = "version") String version,
+                           @RequestParam(value = "methodName") String methodName,
+                           @RequestParam(value = "parameter") String parameter,
+                           @RequestParam(value = "timestamp") String timestamp,
+                           @RequestParam(value = "secret") String secret,
+                           HttpServletRequest req) {
         try {
-            checkSecret(apiKey, secret, timestamp);
+            checkSecret(serviceName, apiKey, secret, timestamp);
         } catch (SoaException e) {
             LOGGER.info("request failed::{}", e);
             return e.getMsg();
@@ -72,15 +73,15 @@ public class ServiceApiController {
 
     @PostMapping(value = "/{serviceName}/{version}/{methodName}/{apiKey}")
     public String authRest1(@PathVariable(value = "serviceName") String serviceName,
-                        @PathVariable(value = "version") String version,
-                        @PathVariable(value = "methodName") String methodName,
-                        @PathVariable(value = "apiKey") String apiKey,
-                        @RequestParam(value = "parameter") String parameter,
-                        @RequestParam(value = "timestamp") String timestamp,
-                        @RequestParam(value = "secret") String secret,
-                        HttpServletRequest req) {
+                            @PathVariable(value = "version") String version,
+                            @PathVariable(value = "methodName") String methodName,
+                            @PathVariable(value = "apiKey") String apiKey,
+                            @RequestParam(value = "parameter") String parameter,
+                            @RequestParam(value = "timestamp") String timestamp,
+                            @RequestParam(value = "secret") String secret,
+                            HttpServletRequest req) {
         try {
-            checkSecret(apiKey, secret, timestamp);
+            checkSecret(serviceName, apiKey, secret, timestamp);
         } catch (SoaException e) {
             LOGGER.info("request failed::{}", e);
             return e.getMsg();
@@ -101,7 +102,11 @@ public class ServiceApiController {
                 .body(list);
     }
 
-    private void checkSecret(String apiKey, String secret, String timestamp) throws SoaException {
+    private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
+        List<String> list = XmlUtil.getServiceWhiteList();
+        if (null == list || !list.contains(serviceName)) {
+            throw new SoaException("0", "非法请求,请联系管理员!");
+        }
         CheckGateWayAuthRequest checkGateWayAuthRequest = new CheckGateWayAuthRequest();
         checkGateWayAuthRequest.setApiKey(apiKey);
         checkGateWayAuthRequest.setSecret(secret);

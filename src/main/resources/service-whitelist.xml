@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service-whitelist>
+    <service>com.today.api.admin.service.OpenAdminService</service>
+    <service>com.today.api.category.service.OpenCategoryService</service>
+    <service>com.today.soa.idgen.service.IDService</service>
+</service-whitelist>
