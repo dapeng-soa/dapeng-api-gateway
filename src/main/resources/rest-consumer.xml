@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <consumer>
-
     <endpoint>
         <id>1</id>
         <groupId>soa_kafka_groupId1</groupId>
@@ -27,7 +26,7 @@
 
     <endpoint>
         <id>3</id>
-        <groupId>soa_kafka_groupId2</groupId>
+        <groupId>soa_kafka_groupId1</groupId>
         <topic>member_1.0.0_event</topic>
         <eventType>com.today.api.member.scala.events.ConsumeFullEvent</eventType>
         <kafkaHost>soa_kafka_host</kafkaHost>
@@ -36,5 +35,4 @@
         <event>com.today.api.member.events.ConsumeFullEvent</event>
         <uri>soa_destination_url</uri>
     </endpoint>
-
 </consumer>
