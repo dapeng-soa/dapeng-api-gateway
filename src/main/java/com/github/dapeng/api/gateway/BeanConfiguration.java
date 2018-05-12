@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 描述: com.github.dapeng.api.gateway
+ * 描述: 启动对 kafka 消息代理 bean 配置
  *
  * @author hz.lei
  * @date 2018年05月03日 上午9:42
