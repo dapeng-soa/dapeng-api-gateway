@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <service-whitelist>
-    <service>com.today.api.admin.service.OpenAdminService</service>
     <service>com.today.api.category.service.OpenCategoryService</service>
+    <service>com.today.api.goods.service.OpenGoodsService</service>
+    <service>com.today.api.layout.service.OpenLayoutService</service>
+    <service>com.today.api.skuprice.service.OpenSkuPriceService</service>
+    <service>com.today.api.address.service.OpenAddressService</service>
+    <service>com.today.api.skuBuyingPrice.service.OpenSkuBuyingPriceService</service>
+    <service>com.today.api.supplier.service.OpenSupplierService</service>
     <service>com.today.soa.idgen.service.IDService</service>
 </service-whitelist>
