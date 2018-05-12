@@ -25,4 +25,16 @@
         <uri>soa_destination_url</uri>
     </endpoint>
 
+    <endpoint>
+        <id>3</id>
+        <groupId>soa_kafka_groupId2</groupId>
+        <topic>member_1.0.0_event</topic>
+        <eventType>com.today.api.member.scala.events.ConsumeFullEvent</eventType>
+        <kafkaHost>soa_kafka_host</kafkaHost>
+        <service>com.today.api.member.service.MemberService</service>
+        <version>1.0.0</version>
+        <event>com.today.api.member.events.ConsumeFullEvent</event>
+        <uri>soa_destination_url</uri>
+    </endpoint>
+
 </consumer>
