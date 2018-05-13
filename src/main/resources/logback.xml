@@ -18,7 +18,7 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{MM-dd HH:mm:ss SSS} %t %p - %m%n</pattern>
+            <pattern>%d{MM-dd HH:mm:ss SSS} %t %p [%X{sessionTid}] - %m%n</pattern>
         </encoder>
     </appender>
 

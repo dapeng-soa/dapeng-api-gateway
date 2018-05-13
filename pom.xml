@@ -37,6 +37,11 @@
 			<artifactId>dapeng-open-api</artifactId>
 			<version>${dapeng.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.dapeng</groupId>
+			<artifactId>dapeng-core</artifactId>
+			<version>${dapeng.version}</version>
+		</dependency>
 		<!--servlet支持开启-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -58,7 +63,12 @@
 			<artifactId>simple-xml</artifactId>
 			<version>2.7.1</version>
 		</dependency>
-
+        <!--eventbus-->
+        <dependency>
+            <groupId>com.today</groupId>
+            <artifactId>event-bus_2.12</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 
 	<build>
