@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author hz.lei
  * @date 2018年05月03日 上午9:42
  */
-//@Configuration
+@Configuration
 public class BeanConfiguration {
 
 
