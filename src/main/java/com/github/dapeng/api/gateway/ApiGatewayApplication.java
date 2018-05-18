@@ -1,8 +1,9 @@
 package com.github.dapeng.api.gateway;
 
+import com.github.dapeng.api.gateway.jmx.JmxAgent;
 import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
+import com.github.dapeng.api.gateway.util.XmlUtil;
 import com.github.dapeng.openapi.cache.ZkBootstrap;
-import com.today.eventbus.spring.MsgAnnotationBeanPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +62,8 @@ public class ApiGatewayApplication implements CommandLineRunner {
             System.setProperty(ApiGatewayProperties.PROP_SOA_ZOOKEEPER_HOST, properties.getHost());
             LOGGER.info("zk host in the environment is not found,setting it with spring boot application, host is {}", properties.getHost());
         }
+        new JmxAgent().registerMbean();
+        XmlUtil.loadWhiteList();
         new ZkBootstrap().init();
     }
 
