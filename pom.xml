@@ -91,6 +91,8 @@
 							<tasks>
 								<copy file="${project.build.directory}/ROOT.war" todir="${basedir}/docker/apps">
 								</copy>
+								<copy file="${project.build.directory}/classes/service-whitelist.xml" todir="${basedir}/docker/apps">
+								</copy>
 							</tasks>
 						</configuration>
 						<goals>
