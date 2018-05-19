@@ -1,6 +1,7 @@
 package com.github.dapeng.api.gateway.util;
 
 import com.github.dapeng.api.gateway.pojo.ServiceWhitelist;
+import com.github.dapeng.api.gateway.zookeeper.ZkAgent;
 import org.simpleframework.xml.core.Persister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author with struy.
@@ -16,20 +18,19 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public class XmlUtil {
-    private static List<String> whitelist = null;
-    private static Logger LOGGER = LoggerFactory.getLogger(XmlUtil.class);
+public class WhiteListUtil {
+    private static Logger LOGGER = LoggerFactory.getLogger(WhiteListUtil.class);
     private static Persister persister = null;
 
-    public static List<String> getServiceWhiteList() {
-        if (null == whitelist) {
-            return loadWhiteList();
-        } else {
-            return whitelist;
-        }
+    public static Set<String> getServiceWhiteList() {
+        return ZkAgent.getWhitelist();
     }
 
-    public static List<String> loadWhiteList() {
+    /**
+     * 初始化白名单
+     * @return
+     */
+    public static List<String> initWhiteList() {
         if (persister == null) {
             persister = new Persister();
         }
@@ -37,30 +38,30 @@ public class XmlUtil {
         try {
             //==images==//
             inputStream = new FileInputStream("/gateway-conf/service-whitelist.xml");
-            whitelist = persister.read(
+            List<String> services = persister.read(
                     ServiceWhitelist.class, inputStream)
                     .getService();
-            LOGGER.info("load service-whitelist.xml on [/gateway-conf] current whitelist [{}]",whitelist.size());
-            return whitelist;
+            LOGGER.info("load service-whitelist.xml on [/gateway-conf] current whitelist [{}]",services.size());
+            return services;
         } catch (FileNotFoundException e) {
             LOGGER.warn("read file system NotFound [/gateway-conf/service-whitelist.xml],found conf file [service-whitelist.xml] on classpath");
             try {
                 //==develop==//
-                whitelist = persister.read(
+                List<String> services  = persister.read(
                         ServiceWhitelist.class,
                         ResourceUtils.getFile("classpath:service-whitelist.xml"))
                         .getService();
-                LOGGER.info("load service-whitelist.xml on [classpath] current whitelist [{}]",whitelist.size());
-                return whitelist;
+                LOGGER.info("load service-whitelist.xml on [classpath] current whitelist [{}]",services.size());
+                return services;
             } catch (FileNotFoundException e1) {
                 LOGGER.error("service-whitelist.xml in [classpath] and [/gateway-conf/] NotFound, please Settings", e);
                 throw new RuntimeException("service-whitelist.xml in [classpath] and [/gateway-conf/] NotFound, please Settings");
             } catch (Exception e1) {
-                LOGGER.error("获取服务白名单错误!", e);
+                LOGGER.error("初始化白名单错误!", e1);
                 return null;
             }
         } catch (Exception e) {
-            LOGGER.error("获取服务白名单错误!", e);
+            LOGGER.error("初始化白名单错误!", e);
             return null;
         } finally {
             if (null != inputStream) {

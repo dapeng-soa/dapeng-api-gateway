@@ -1,6 +1,6 @@
 package com.github.dapeng.api.gateway.jmx;
 
-import com.github.dapeng.api.gateway.util.XmlUtil;
+import com.github.dapeng.api.gateway.zookeeper.ZkAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,8 @@ public class GateWayInfo implements GateWayInfoMBean{
     private static Logger LOGGER = LoggerFactory.getLogger(GateWayInfo.class);
     @Override
     public void reloadWhitelist() {
-        XmlUtil.loadWhiteList();
+        ZkAgent.getInstance().destroy();
+        ZkAgent.getInstance().connect();
         LOGGER.info("jmx try reload service whiteList");
     }
 }

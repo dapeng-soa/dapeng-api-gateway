@@ -1,7 +1,7 @@
 package com.github.dapeng.api.gateway.controller;
 
 import com.github.dapeng.api.gateway.util.InvokeUtil;
-import com.github.dapeng.api.gateway.util.XmlUtil;
+import com.github.dapeng.api.gateway.util.WhiteListUtil;
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author struy
@@ -49,7 +50,6 @@ public class ServiceApiController {
     }
 
     // ======new========
-    // 后期应当只做最小切换,路由地址应当不变，而是增加一份参数
 
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
@@ -102,7 +102,7 @@ public class ServiceApiController {
     }
 
     private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
-        List<String> list = XmlUtil.getServiceWhiteList();
+        Set<String> list = WhiteListUtil.getServiceWhiteList();
         if (null == list || !list.contains(serviceName)) {
             throw new SoaException("0", "非法请求,请联系管理员!");
         }
