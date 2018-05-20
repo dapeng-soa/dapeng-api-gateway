@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
  * email :yq1724555319@gmail.com
  */
 
-public class GateWayInfo implements GateWayInfoMBean{
+public class GateWayInfo implements GateWayInfoMBean {
     private static Logger LOGGER = LoggerFactory.getLogger(GateWayInfo.class);
+
     @Override
     public void reloadWhitelist() {
-        ZkAgent.getInstance().destroy();
-        ZkAgent.getInstance().connect();
+        ZkAgent.getInstance().reConnection();
         LOGGER.info("jmx try reload service whiteList");
     }
 }

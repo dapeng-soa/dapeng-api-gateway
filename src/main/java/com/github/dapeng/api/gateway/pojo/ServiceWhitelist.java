@@ -13,7 +13,7 @@ import java.util.List;
 @Root(name = "service-whitelist")
 public class ServiceWhitelist {
     @ElementList(entry = "service", inline = true)
-    protected List<String> service;
+    private List<String> service;
 
     public List<String> getService() {
         return service;

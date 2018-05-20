@@ -15,14 +15,15 @@ import java.lang.management.ManagementFactory;
 public class JmxAgent {
     private final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
     private static Logger LOGGER = LoggerFactory.getLogger(JmxAgent.class);
-    public void registerMbean(){
+
+    public void registerMbean() {
         try {
             //create mbean and register mbean
             ObjectName mName = new ObjectName("com.github.dapeng:name=gatewayInfo");
             server.registerMBean(new GateWayInfo(), mName);
             LOGGER.info("::registerMBean GateWayInfo success");
         } catch (Exception e) {
-            LOGGER.info("::registerMBean GateWayInfo error",e);
+            LOGGER.info("::registerMBean GateWayInfo error", e);
         }
     }
 }
