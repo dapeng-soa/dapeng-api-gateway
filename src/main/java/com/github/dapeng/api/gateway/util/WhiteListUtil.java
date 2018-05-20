@@ -28,6 +28,7 @@ public class WhiteListUtil {
 
     /**
      * 初始化白名单
+     *
      * @return
      */
     public static List<String> initWhiteList() {
@@ -41,17 +42,17 @@ public class WhiteListUtil {
             List<String> services = persister.read(
                     ServiceWhitelist.class, inputStream)
                     .getService();
-            LOGGER.info("load service-whitelist.xml on [/gateway-conf] current whitelist [{}]",services.size());
+            LOGGER.info("load service-whitelist.xml on [/gateway-conf] current whitelist [{}]", services.size());
             return services;
         } catch (FileNotFoundException e) {
             LOGGER.warn("read file system NotFound [/gateway-conf/service-whitelist.xml],found conf file [service-whitelist.xml] on classpath");
             try {
                 //==develop==//
-                List<String> services  = persister.read(
+                List<String> services = persister.read(
                         ServiceWhitelist.class,
                         ResourceUtils.getFile("classpath:service-whitelist.xml"))
                         .getService();
-                LOGGER.info("load service-whitelist.xml on [classpath] current whitelist [{}]",services.size());
+                LOGGER.info("load service-whitelist.xml on [classpath] current whitelist [{}]", services.size());
                 return services;
             } catch (FileNotFoundException e1) {
                 LOGGER.error("service-whitelist.xml in [classpath] and [/gateway-conf/] NotFound, please Settings", e);

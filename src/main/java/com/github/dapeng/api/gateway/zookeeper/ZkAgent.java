@@ -20,17 +20,19 @@ public class ZkAgent {
     private Logger LOGGER = LoggerFactory.getLogger(ZkAgent.class);
     private String SERVICE_WITHELIST_PATH = "/gateway/white_list/services";
     private String zkHost = SoaSystemEnvProperties.SOA_ZOOKEEPER_HOST;
-    private ZooKeeper zk;
     private static Set<String> whitelist = Collections.synchronizedSet(new HashSet<>());
     private static ZkAgent zkAgent = null;
+    private ZooKeeper zk;
 
     public static Set<String> getWhitelist() {
         return whitelist;
     }
-    private ZkAgent(){}
 
-    public static ZkAgent getInstance(){
-        if (null == zkAgent){
+    private ZkAgent() {
+    }
+
+    public static ZkAgent getInstance() {
+        if (null == zkAgent) {
             zkAgent = new ZkAgent();
         }
         return zkAgent;
@@ -55,7 +57,7 @@ public class ZkAgent {
     /**
      * 重连
      */
-    public void reConnection(){
+    public void reConnection() {
         destroy();
         connect();
     }
@@ -112,7 +114,7 @@ public class ZkAgent {
     /**
      * 关闭 zk 连接
      */
-    public void destroy() {
+    private void destroy() {
         if (zk != null) {
             try {
                 LOGGER.info("ServerZk closing connection to zookeeper {}", zkHost);
@@ -130,7 +132,7 @@ public class ZkAgent {
      * @param path
      * @param ephemeral
      */
-    public void create(String path, boolean ephemeral) {
+    private void create(String path, boolean ephemeral) {
 
         int i = path.lastIndexOf("/");
         if (i > 0) {
@@ -200,7 +202,7 @@ public class ZkAgent {
                 }
             });
             whitelist.addAll(children);
-            LOGGER.info("当前白名单个数:[{}]",whitelist.size());
+            LOGGER.info("当前白名单个数:[{}]", whitelist.size());
             LOGGER.info(">>>>>>>>>>>>>>>>>>");
             whitelist.forEach(w -> {
                 LOGGER.info(w);
