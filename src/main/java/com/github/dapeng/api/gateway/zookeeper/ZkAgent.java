@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ZkAgent {
     private Logger LOGGER = LoggerFactory.getLogger(ZkAgent.class);
-    private String SERVICE_WITHELIST_PATH = "/gateway/white_list/services";
+    private String SERVICE_WITHELIST_PATH = "/soa/whitelist/services";
     private String zkHost = SoaSystemEnvProperties.SOA_ZOOKEEPER_HOST;
     private static Set<String> whitelist = Collections.synchronizedSet(new HashSet<>());
     private static ZkAgent zkAgent = null;
