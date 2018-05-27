@@ -35,7 +35,6 @@ public class ServiceApiController {
                        @RequestParam(value = "methodName") String methodName,
                        @RequestParam(value = "parameter") String parameter,
                        HttpServletRequest req) {
-        LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
@@ -46,7 +45,6 @@ public class ServiceApiController {
                         @PathVariable(value = "methodName") String methodName,
                         @RequestParam(value = "parameter") String parameter,
                         HttpServletRequest req) {
-        LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
@@ -65,7 +63,6 @@ public class ServiceApiController {
             LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(), apiKey, serviceName, version, methodName, e);
             return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
         }
-        LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
@@ -84,7 +81,6 @@ public class ServiceApiController {
             LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(), apiKey, serviceName, version, methodName, e);
             return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
         }
-        LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
