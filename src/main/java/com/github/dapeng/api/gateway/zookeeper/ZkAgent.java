@@ -16,17 +16,14 @@ import java.util.concurrent.TimeUnit;
  * email :yq1724555319@gmail.com
  */
 
+@Deprecated
 public class ZkAgent {
     private Logger LOGGER = LoggerFactory.getLogger(ZkAgent.class);
     private String SERVICE_WITHELIST_PATH = "/soa/whitelist/services";
     private String zkHost = SoaSystemEnvProperties.SOA_ZOOKEEPER_HOST;
-    private static Set<String> whitelist = Collections.synchronizedSet(new HashSet<>());
+    private Set<String> whitelist = Collections.synchronizedSet(new HashSet<>(16));
     private static ZkAgent zkAgent = null;
     private ZooKeeper zk;
-
-    public static Set<String> getWhitelist() {
-        return whitelist;
-    }
 
     private ZkAgent() {
     }
@@ -38,6 +35,10 @@ public class ZkAgent {
         return zkAgent;
     }
 
+
+    public Set<String> getWhitelist() {
+        return whitelist;
+    }
 
     /**
      * 注册服务白名单到zookeeper
