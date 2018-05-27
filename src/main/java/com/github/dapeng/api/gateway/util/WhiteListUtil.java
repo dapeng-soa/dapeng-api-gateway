@@ -23,7 +23,7 @@ public class WhiteListUtil {
     private static Persister persister = null;
 
     public static Set<String> getServiceWhiteList() {
-        return ZkAgent.getWhitelist();
+        return ZkAgent.getInstance().getWhitelist();
     }
 
     /**

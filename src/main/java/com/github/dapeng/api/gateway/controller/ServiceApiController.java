@@ -28,7 +28,7 @@ public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
 
-    // ======old======== //
+    @Deprecated
     @PostMapping
     public String rest(@RequestParam(value = "serviceName") String serviceName,
                        @RequestParam(value = "version") String version,
@@ -39,6 +39,7 @@ public class ServiceApiController {
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
+    @Deprecated
     @PostMapping(value = "/{serviceName}/{version}/{methodName}")
     public String rest1(@PathVariable(value = "serviceName") String serviceName,
                         @PathVariable(value = "version") String version,
@@ -48,8 +49,6 @@ public class ServiceApiController {
         LOGGER.debug("api url request :{}:{}:{}:{}", serviceName, version, methodName, parameter);
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
-
-    // ======new========
 
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
