@@ -19,6 +19,7 @@ import java.util.Optional;
  */
 @Service
 public class SoaInvocationProxy implements InvocationContext.InvocationContextProxy {
+    private Map<String, String> cookies = new HashMap<>(16);
 
     @PostConstruct
     public void init() {
@@ -81,7 +82,7 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Map<String, String> cookies() {
-        return new HashMap<>(16);
+        return cookies;
     }
 
     private HttpServletRequest getHttpRequest() {
