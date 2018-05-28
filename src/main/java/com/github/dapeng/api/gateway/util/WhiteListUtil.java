@@ -1,15 +1,15 @@
 package com.github.dapeng.api.gateway.util;
 
 import com.github.dapeng.api.gateway.pojo.ServiceWhitelist;
-import com.github.dapeng.api.gateway.zookeeper.ZkAgent;
+import com.github.dapeng.openapi.cache.ZookeeperClient;
 import org.simpleframework.xml.core.Persister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,7 +23,7 @@ public class WhiteListUtil {
     private static Persister persister = null;
 
     public static Set<String> getServiceWhiteList() {
-        return ZkAgent.getWhitelist();
+        return ZookeeperClient.getWhitelist();
     }
 
     /**
@@ -31,7 +31,7 @@ public class WhiteListUtil {
      *
      * @return
      */
-    public static List<String> initWhiteList() {
+    public static Set<String> initWhiteList() {
         if (persister == null) {
             persister = new Persister();
         }
@@ -39,7 +39,7 @@ public class WhiteListUtil {
         try {
             //==images==//
             inputStream = new FileInputStream("/gateway-conf/service-whitelist.xml");
-            List<String> services = persister.read(
+            Set<String> services = persister.read(
                     ServiceWhitelist.class, inputStream)
                     .getService();
             LOGGER.info("load service-whitelist.xml on [/gateway-conf] current whitelist [{}]", services.size());
@@ -48,7 +48,7 @@ public class WhiteListUtil {
             LOGGER.warn("read file system NotFound [/gateway-conf/service-whitelist.xml],found conf file [service-whitelist.xml] on classpath");
             try {
                 //==develop==//
-                List<String> services = persister.read(
+                Set<String> services = persister.read(
                         ServiceWhitelist.class,
                         ResourceUtils.getFile("classpath:service-whitelist.xml"))
                         .getService();

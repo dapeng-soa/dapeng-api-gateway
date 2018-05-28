@@ -1,8 +1,7 @@
 package com.github.dapeng.api.gateway;
 
-import com.github.dapeng.api.gateway.jmx.JmxAgent;
 import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
-import com.github.dapeng.api.gateway.zookeeper.ZkAgent;
+import com.github.dapeng.api.gateway.util.WhiteListUtil;
 import com.github.dapeng.openapi.cache.ZkBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +61,7 @@ public class ApiGatewayApplication implements CommandLineRunner {
             System.setProperty(ApiGatewayProperties.PROP_SOA_ZOOKEEPER_HOST, properties.getHost());
             LOGGER.info("zk host in the environment is not found,setting it with spring boot application, host is {}", properties.getHost());
         }
-        new JmxAgent().registerMbean();
-        ZkAgent.getInstance().connect();
-        new ZkBootstrap().init();
+        new ZkBootstrap().filterInitWhiteList(WhiteListUtil.initWhiteList());
     }
 
 
