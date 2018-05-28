@@ -3,7 +3,7 @@ package com.github.dapeng.api.gateway.pojo;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author with struy.
@@ -13,9 +13,9 @@ import java.util.List;
 @Root(name = "service-whitelist")
 public class ServiceWhitelist {
     @ElementList(entry = "service", inline = true)
-    private List<String> service;
+    private Set<String> service;
 
-    public List<String> getService() {
+    public Set<String> getService() {
         return service;
     }
 }
