@@ -1,13 +1,11 @@
 package com.github.dapeng.api.gateway;
 
+import com.github.dapeng.api.gateway.util.InvokeUtil;
 import com.github.dapeng.core.InvocationContext;
 import com.github.dapeng.core.InvocationContextImpl;
 import com.github.dapeng.core.helper.DapengUtil;
 import com.github.dapeng.core.helper.IPUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -33,28 +31,13 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Optional<String> userIp() {
-        HttpServletRequest request = getHttpRequest();
+        HttpServletRequest request = InvokeUtil.getHttpRequest();
 
         if (request == null) {
             return Optional.of(IPUtils.localIp());
         }
 
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
+        String ip = InvokeUtil.getIpAddress(request);
 
         return Optional.ofNullable(ip);
     }
@@ -71,7 +54,7 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Optional<String> callerMid() {
-        HttpServletRequest request = getHttpRequest();
+        HttpServletRequest request = InvokeUtil.getHttpRequest();
 
         if (request == null) {
             return Optional.of("apiGateWay");
@@ -82,14 +65,23 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Map<String, String> cookies() {
-        return cookies;
-    }
+        HttpServletRequest request = InvokeUtil.getHttpRequest();
 
-    private HttpServletRequest getHttpRequest() {
-        if (RequestContextHolder.getRequestAttributes() == null) {
-            return null;
+        if (request == null) {
+            return cookies;
         }
-
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String cookie_storeId = request.getParameter("cookie_storeId");
+        if (null != cookie_storeId) {
+            cookies.put("cookie_storeId", cookie_storeId);
+        }
+        String cookie_posId = request.getParameter("cookie_posId");
+        if (null != cookie_posId) {
+            cookies.put("cookie_posId", cookie_posId);
+        }
+        String cookie_operatorId = request.getParameter("cookie_operatorId");
+        if (null != cookie_operatorId) {
+            cookies.put("cookie_operatorId", cookie_operatorId);
+        }
+        return cookies;
     }
 }

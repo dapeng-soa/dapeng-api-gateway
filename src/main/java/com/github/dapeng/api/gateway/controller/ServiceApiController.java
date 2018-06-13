@@ -3,6 +3,7 @@ package com.github.dapeng.api.gateway.controller;
 import com.github.dapeng.api.gateway.util.InvokeUtil;
 import com.github.dapeng.api.gateway.util.WhiteListUtil;
 import com.github.dapeng.core.SoaException;
+import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
@@ -14,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author struy
@@ -57,13 +55,8 @@ public class ServiceApiController {
                            @RequestParam(value = "timestamp") String timestamp,
                            @RequestParam(value = "secret") String secret,
                            HttpServletRequest req) {
-        try {
-            checkSecret(serviceName, apiKey, secret, timestamp);
-        } catch (SoaException e) {
-            LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(), apiKey, serviceName, version, methodName, e);
-            return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
-        }
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
+        return proccessRequest(serviceName,
+                version,methodName,apiKey,parameter,timestamp,secret,req);
     }
 
     @PostMapping(value = "/{serviceName}/{version}/{methodName}/{apiKey}")
@@ -75,13 +68,40 @@ public class ServiceApiController {
                             @RequestParam(value = "timestamp") String timestamp,
                             @RequestParam(value = "secret") String secret,
                             HttpServletRequest req) {
+        return proccessRequest(serviceName,
+                version,methodName,apiKey,parameter,timestamp,secret,req);
+
+    }
+
+
+    /**
+     * 处理请求
+     * @param serviceName
+     * @param version
+     * @param methodName
+     * @param apiKey
+     * @param parameter
+     * @param timestamp
+     * @param secret
+     * @param req
+     * @return
+     */
+    private String proccessRequest(String serviceName,
+                                   String version,
+                                   String methodName,
+                                   String apiKey,
+                                   String parameter,
+                                   String timestamp,
+                                   String secret,
+                                   HttpServletRequest req) {
         try {
             checkSecret(serviceName, apiKey, secret, timestamp);
+            return PostUtil.post(serviceName, version, methodName, parameter, req);
         } catch (SoaException e) {
-            LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(), apiKey, serviceName, version, methodName, e);
+            HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+            LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(request1), apiKey, serviceName, version, methodName, e);
             return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
         }
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
     @GetMapping(value = "/list")
@@ -101,11 +121,13 @@ public class ServiceApiController {
         if (null == list || !list.contains(serviceName)) {
             throw new SoaException("0", "非法请求,请联系管理员!");
         }
+        HttpServletRequest request = InvokeUtil.getHttpRequest();
+        String ip = request == null ? IPUtils.localIp() : InvokeUtil.getIpAddress(request);
         CheckGateWayAuthRequest checkGateWayAuthRequest = new CheckGateWayAuthRequest();
         checkGateWayAuthRequest.setApiKey(apiKey);
         checkGateWayAuthRequest.setSecret(secret);
         checkGateWayAuthRequest.setTimestamp(timestamp);
-        checkGateWayAuthRequest.setInvokeIp(InvokeUtil.getIpAddress());
+        checkGateWayAuthRequest.setInvokeIp(ip);
         adminService.checkGateWayAuth(checkGateWayAuthRequest);
     }
 }
