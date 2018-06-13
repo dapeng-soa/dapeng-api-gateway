@@ -24,8 +24,7 @@ public class InvokeUtil {
      *
      * @return
      */
-    public static String getIpAddress() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    public static String getIpAddress(HttpServletRequest request) {
 
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -44,5 +43,13 @@ public class InvokeUtil {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    public static HttpServletRequest getHttpRequest() {
+        if (RequestContextHolder.getRequestAttributes() == null) {
+            return null;
+        }
+
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 }
