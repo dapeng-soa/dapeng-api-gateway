@@ -56,7 +56,7 @@ public class ServiceApiController {
                            @RequestParam(value = "secret") String secret,
                            HttpServletRequest req) {
         return proccessRequest(serviceName,
-                version,methodName,apiKey,parameter,timestamp,secret,req);
+                version, methodName, apiKey, parameter, timestamp, secret, req);
     }
 
     @PostMapping(value = "/{serviceName}/{version}/{methodName}/{apiKey}")
@@ -69,13 +69,43 @@ public class ServiceApiController {
                             @RequestParam(value = "secret") String secret,
                             HttpServletRequest req) {
         return proccessRequest(serviceName,
-                version,methodName,apiKey,parameter,timestamp,secret,req);
+                version, methodName, apiKey, parameter, timestamp, secret, req);
 
     }
 
+    /**
+     * 服务列表
+     *
+     * @return
+     */
+    @GetMapping(value = "/list")
+    public ResponseEntity<?> list() {
+        Map<String, Service> services = ServiceCache.getServices();
+        List<String> list = new ArrayList(16);
+        services.forEach((k, v) -> {
+            list.add(v.namespace + "." + v.name + ":" + v.meta.version);
+        });
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(list);
+    }
+
+    /**
+     * 同步时间
+     *
+     * @return
+     */
+    @GetMapping(value = "/sysTime")
+    public ResponseEntity<?> sysTime() {
+        long now = System.currentTimeMillis();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(now);
+    }
 
     /**
      * 处理请求
+     *
      * @param serviceName
      * @param version
      * @param methodName
@@ -99,27 +129,16 @@ public class ServiceApiController {
             return PostUtil.post(serviceName, version, methodName, parameter, req);
         } catch (SoaException e) {
             HttpServletRequest request1 = InvokeUtil.getHttpRequest();
-            LOGGER.info("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", InvokeUtil.getIpAddress(request1), apiKey, serviceName, version, methodName, e);
+            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, serviceName, version, methodName, e);
             return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
         }
     }
 
-    @GetMapping(value = "/list")
-    public ResponseEntity<?> list() {
-        Map<String, Service> services = ServiceCache.getServices();
-        List<String> list = new ArrayList(16);
-        services.forEach((k, v) -> {
-            list.add(v.namespace + "." + v.name + ":" + v.meta.version);
-        });
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(list);
-    }
 
     private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
         Set<String> list = WhiteListUtil.getServiceWhiteList();
         if (null == list || !list.contains(serviceName)) {
-            throw new SoaException("0", "非法请求,请联系管理员!");
+            throw new SoaException("Err-GateWay-005", "非法请求,请联系管理员!");
         }
         HttpServletRequest request = InvokeUtil.getHttpRequest();
         String ip = request == null ? IPUtils.localIp() : InvokeUtil.getIpAddress(request);
