@@ -1,19 +1,17 @@
 package com.github.dapeng.api.gateway;
 
 import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
-import com.github.dapeng.api.gateway.util.WhiteListUtil;
-import com.github.dapeng.openapi.cache.ZkBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ import java.util.List;
  */
 @SpringBootApplication
 @EnableConfigurationProperties(ApiGatewayProperties.class)
-public class ApiGatewayApplication implements CommandLineRunner {
+public class ApiGatewayApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiGatewayApplication.class);
 
@@ -51,18 +49,4 @@ public class ApiGatewayApplication implements CommandLineRunner {
         mappingConverter.setSupportedMediaTypes(list);
         return mappingConverter;
     }
-
-    @Override
-    public void run(String... args) throws Exception {
-        if (System.getenv(ApiGatewayProperties.ENV_SOA_ZOOKEEPER_HOST) != null
-                || System.getProperty(ApiGatewayProperties.PROP_SOA_ZOOKEEPER_HOST) != null) {
-            LOGGER.info("zk host in the environment is already setter...");
-        } else {
-            System.setProperty(ApiGatewayProperties.PROP_SOA_ZOOKEEPER_HOST, properties.getHost());
-            LOGGER.info("zk host in the environment is not found,setting it with spring boot application, host is {}", properties.getHost());
-        }
-        new ZkBootstrap().filterInitWhiteList(WhiteListUtil.initWhiteList());
-    }
-
-
 }

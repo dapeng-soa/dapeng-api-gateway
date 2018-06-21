@@ -25,21 +25,21 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
     }
 
     @Override
-    public Optional<Long> sessionTid() {
+    public Optional<String> sessionTid() {
         return Optional.of(DapengUtil.generateTid());
     }
 
     @Override
-    public Optional<Integer> userIp() {
+    public Optional<String> userIp() {
         HttpServletRequest request = InvokeUtil.getHttpRequest();
 
         if (request == null) {
-            return Optional.of(IPUtils.localIpAsInt());
+            return Optional.of(IPUtils.localIp());
         }
 
         String ip = InvokeUtil.getIpAddress(request);
 
-        return Optional.ofNullable(IPUtils.transferIp(ip));
+        return Optional.ofNullable(ip);
     }
 
     @Override
