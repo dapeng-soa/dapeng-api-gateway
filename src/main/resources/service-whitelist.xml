@@ -6,6 +6,8 @@
     <service>com.today.api.stock.service.StockService</service>
     <service>com.today.api.inventory.service.AdminInventoryService</service>
     <service>com.today.api.admin.service.AdminService</service>
+    <service>com.today.api.admin.service.OpenAdminService</service>
+    <service>com.today.api.admin.service.AminScheduledService</service>
     <service>com.today.api.category.service.OpenCategoryService</service>
     <service>com.today.api.layout.service.OpenLayoutService</service>
     <service>com.today.api.skuprice.service.OpenSkuPriceService</service>
@@ -19,4 +21,6 @@
     <service>com.today.api.member.service.MemberService</service>
     <service>com.today.api.purchase.query.service.PurchaseQueryService</service>
     <service>com.today.api.category.service.AdminCategoryService</service>
+    <service>com.today.api.purchase.service.PurchaseSupplierService</service>
+    <service>com.today.api.verifyorder.service.OrderVerifyService</service>
 </service-whitelist>
