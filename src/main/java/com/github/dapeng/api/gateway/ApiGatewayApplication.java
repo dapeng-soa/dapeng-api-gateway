@@ -1,9 +1,6 @@
 package com.github.dapeng.api.gateway;
 
 import com.github.dapeng.api.gateway.properties.ApiGatewayProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -21,11 +18,6 @@ import java.util.List;
 @SpringBootApplication
 @EnableConfigurationProperties(ApiGatewayProperties.class)
 public class ApiGatewayApplication {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiGatewayApplication.class);
-
-    @Autowired
-    private ApiGatewayProperties properties;
 
     public static void main(String[] args) {
         new SpringApplicationBuilder()
