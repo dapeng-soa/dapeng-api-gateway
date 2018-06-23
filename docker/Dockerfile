@@ -1,10 +1,10 @@
-FROM docker.today36524.com.cn:5000/base/tomcat:8-jdk8
+FROM docker.today36524.com.cn:5000/base/openjdk:server-jre8
 
-COPY ./catalina.sh /usr/local/tomcat/bin/
-RUN mkdir /gateway-conf && rm -rf /usr/local/tomcat/webapps && mkdir -p /usr/local/tomcat/webapps && chmod 744 /usr/local/tomcat/bin/catalina.sh
+RUN mkdir /gateway-conf &&  mkdir -p /opt/gateway
 
-COPY  ./apps/ROOT.war /usr/local/tomcat/webapps/
-
+COPY  ./apps/dapeng-api-gateway.jar /opt/gateway/
+COPY  ./startup.sh /opt/gateway/
 COPY  ./apps/service-whitelist.xml /gateway-conf/
 
-CMD sh /opt/fluent-bit/fluent-bit.sh && catalina.sh run
+ENTRYPOINT EXEC  /opt/gateway/startup.sh
+
