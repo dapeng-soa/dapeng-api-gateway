@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -129,7 +130,7 @@ public class ServiceApiController {
             return PostUtil.post(serviceName, version, methodName, parameter, req);
         } catch (SoaException e) {
             HttpServletRequest request1 = InvokeUtil.getHttpRequest();
-            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call[ {}:{}:{}: ] {}", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, serviceName, version, methodName, e);
+            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
             return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
         }
     }
