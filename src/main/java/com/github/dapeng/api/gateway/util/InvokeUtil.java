@@ -2,7 +2,10 @@ package com.github.dapeng.api.gateway.util;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author with struy.
@@ -51,5 +54,27 @@ public class InvokeUtil {
         }
 
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+
+
+    public static Map<String, String> getCookies() {
+        HttpServletRequest request = getHttpRequest();
+        Map<String, String> cookies = new HashMap<>(16);
+        if (request == null) {
+            return cookies;
+        }
+        String cookie_storeId = request.getParameter("cookie_storeId");
+        if (null != cookie_storeId) {
+            cookies.put("storeId", cookie_storeId);
+        }
+        String cookie_posId = request.getParameter("cookie_posId");
+        if (null != cookie_posId) {
+            cookies.put("posId", cookie_posId);
+        }
+        String cookie_operatorId = request.getParameter("cookie_operatorId");
+        if (null != cookie_operatorId) {
+            cookies.put("operatorId", cookie_operatorId);
+        }
+        return cookies;
     }
 }
