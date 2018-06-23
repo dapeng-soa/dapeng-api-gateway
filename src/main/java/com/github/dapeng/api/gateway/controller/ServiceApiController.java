@@ -139,7 +139,7 @@ public class ServiceApiController {
     private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
         Set<String> list = WhiteListUtil.getServiceWhiteList();
         if (null == list || !list.contains(serviceName)) {
-            throw new SoaException("Err-GateWay-005", "非法请求,请联系管理员!");
+            throw new SoaException("Err-GateWay-006", "非法请求,请联系管理员!");
         }
         HttpServletRequest request = InvokeUtil.getHttpRequest();
         String ip = request == null ? IPUtils.localIp() : InvokeUtil.getIpAddress(request);
