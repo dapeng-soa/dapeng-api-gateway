@@ -34,7 +34,7 @@ SOA_BASE="-Dsoa.base=$PRGDIR/../ -Dsoa.run.mode=native"
 pid=0
 process_exit() {
  if [ $pid -ne 0 ]; then
-  echo "graceful shutdown pid: $pid"
+  echo "graceful shutdown pid: $pid" > $LOGDIR/pid.txt
   kill -SIGTERM "$pid"
   wait "$pid"
  fi

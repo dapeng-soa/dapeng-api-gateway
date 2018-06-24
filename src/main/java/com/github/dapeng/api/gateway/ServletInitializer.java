@@ -1,7 +1,7 @@
 package com.github.dapeng.api.gateway;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
  * 外部tomcat容器支持
