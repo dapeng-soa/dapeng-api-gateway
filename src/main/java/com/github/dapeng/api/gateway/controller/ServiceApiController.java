@@ -27,26 +27,6 @@ public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
 
-    @Deprecated
-    @PostMapping
-    public String rest(@RequestParam(value = "serviceName") String serviceName,
-                       @RequestParam(value = "version") String version,
-                       @RequestParam(value = "methodName") String methodName,
-                       @RequestParam(value = "parameter") String parameter,
-                       HttpServletRequest req) {
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
-    }
-
-    @Deprecated
-    @PostMapping(value = "/{serviceName}/{version}/{methodName}")
-    public String rest1(@PathVariable(value = "serviceName") String serviceName,
-                        @PathVariable(value = "version") String version,
-                        @PathVariable(value = "methodName") String methodName,
-                        @RequestParam(value = "parameter") String parameter,
-                        HttpServletRequest req) {
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
-    }
-
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
                            @RequestParam(value = "serviceName") String serviceName,
