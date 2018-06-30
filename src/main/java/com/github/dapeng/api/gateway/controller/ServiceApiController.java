@@ -27,26 +27,6 @@ public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
 
-    @Deprecated
-    @PostMapping
-    public String rest(@RequestParam(value = "serviceName") String serviceName,
-                       @RequestParam(value = "version") String version,
-                       @RequestParam(value = "methodName") String methodName,
-                       @RequestParam(value = "parameter") String parameter,
-                       HttpServletRequest req) {
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
-    }
-
-    @Deprecated
-    @PostMapping(value = "/{serviceName}/{version}/{methodName}")
-    public String rest1(@PathVariable(value = "serviceName") String serviceName,
-                        @PathVariable(value = "version") String version,
-                        @PathVariable(value = "methodName") String methodName,
-                        @RequestParam(value = "parameter") String parameter,
-                        HttpServletRequest req) {
-        return PostUtil.post(serviceName, version, methodName, parameter, req);
-    }
-
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
                            @RequestParam(value = "serviceName") String serviceName,
@@ -139,7 +119,7 @@ public class ServiceApiController {
     private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
         Set<String> list = WhiteListUtil.getServiceWhiteList();
         if (null == list || !list.contains(serviceName)) {
-            throw new SoaException("Err-GateWay-005", "非法请求,请联系管理员!");
+            throw new SoaException("Err-GateWay-006", "非法请求,请联系管理员!");
         }
         HttpServletRequest request = InvokeUtil.getHttpRequest();
         String ip = request == null ? IPUtils.localIp() : InvokeUtil.getIpAddress(request);
