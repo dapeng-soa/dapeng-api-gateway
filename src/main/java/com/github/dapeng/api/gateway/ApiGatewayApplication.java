@@ -40,7 +40,7 @@ public class ApiGatewayApplication {
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter mappingConverter = new MappingJackson2HttpMessageConverter();
-        List<MediaType> list = new ArrayList();
+        List<MediaType> list = new ArrayList<>();
         list.add(MediaType.TEXT_HTML);
         list.add(MediaType.TEXT_PLAIN);
         list.add(MediaType.APPLICATION_JSON_UTF8);
