@@ -34,14 +34,19 @@ public class GracefulShutdown implements TomcatConnectorCustomizer, ApplicationL
         this.connector = connector;
     }
 
+    /**
+     * 3次,每次3s
+     *
+     * @param contextClosedEvent
+     */
     @Override
     public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
         HealthCheckController.status = ContainerStatus.YELLOW;
-        logger.info("睡眠30s,等待tengine踢出当前web服务");
+        logger.info("睡眠10s,等待tengine踢出当前web服务");
         try {
-            Thread.sleep(30000);
+            TimeUnit.SECONDS.sleep(10);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("睡眠线程被打断: " + e.getMessage(), e);
         }
         logger.info("准备关闭容器，先关闭线程!");
         this.connector.pause();
