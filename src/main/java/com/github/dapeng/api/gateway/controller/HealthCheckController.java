@@ -25,6 +25,7 @@ public class HealthCheckController {
 
     @RequestMapping(value = "/health/check", method = RequestMethod.HEAD)
     public ResponseEntity healthCheck() {
+        logger.debug("health check,container status: " + status);
         ResponseEntity<String> response;
         if (status == ContainerStatus.YELLOW) {
             response = ResponseEntity
