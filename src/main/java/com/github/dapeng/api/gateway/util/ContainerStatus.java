@@ -1,7 +1,7 @@
 package com.github.dapeng.api.gateway.util;
 
 /**
- * desc: TODO
+ * desc: tomcat容器状态
  *
  * @author hz.lei
  * @since 2018年06月30日 下午5:26
