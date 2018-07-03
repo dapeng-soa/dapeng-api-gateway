@@ -1,5 +1,7 @@
 package com.github.dapeng.api.gateway;
 
+import com.github.dapeng.api.gateway.controller.HealthCheckController;
+import com.github.dapeng.api.gateway.util.ContainerStatus;
 import org.apache.catalina.connector.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,14 @@ public class GracefulShutdown implements TomcatConnectorCustomizer, ApplicationL
 
     @Override
     public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+        HealthCheckController.status = ContainerStatus.YELLOW;
+        logger.info("睡眠30s,等待tengine踢出当前web服务");
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        logger.info("准备关闭容器，先关闭线程!");
         this.connector.pause();
         Executor executor = this.connector.getProtocolHandler().getExecutor();
 
