@@ -28,6 +28,7 @@ public class HealthCheckController {
         logger.debug("health check,container status: " + status);
         ResponseEntity<String> response;
         if (status == ContainerStatus.YELLOW) {
+            logger.info("health check,container status: " + status);
             response = ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("container maybe shutdown soon");
