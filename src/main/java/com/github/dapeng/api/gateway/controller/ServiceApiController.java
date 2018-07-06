@@ -47,6 +47,16 @@ public class ServiceApiController {
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
+    @Deprecated
+    @PostMapping(value = "/{serviceName}/{version}/{methodName}.html")
+    public String rest2(@PathVariable(value = "serviceName") String serviceName,
+                        @PathVariable(value = "version") String version,
+                        @PathVariable(value = "methodName") String methodName,
+                        @RequestParam(value = "parameter") String parameter,
+                        HttpServletRequest req) {
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
+
 
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
