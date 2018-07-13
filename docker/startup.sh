@@ -50,6 +50,16 @@ nohup java -server $JVM_OPTS $SOA_BASE $DEBUG_OPTS $USER_OPTS  $E_JAVA_OPTS -jar
 pid="$!"
 echo "start pid: $pid" > $LOGDIR/pid.txt
 
-nohup sh /opt/fluent-bit/fluent-bit.sh >> $LOGDIR/fluent-bit.log 2>&1 &
+
+# fluent enable , fluent_bit_enable=true
+
+fluentBitEnable="$fluent_bit_enable"
+if [ "$fluentBitEnable" == "" ]; then
+    fluentBitEnable="false"
+fi
+
+if [ "$fluentBitEnable" == "true" ]; then
+   nohup sh /opt/fluent-bit/fluent-bit.sh >> $LOGDIR/fluent-bit.log 2>&1 &
+fi
 
 wait $pid
