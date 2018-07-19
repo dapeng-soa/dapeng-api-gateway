@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Optional<Long> sessionTid() {
-        return Optional.of(DapengUtil.generateTid());
+        return Optional.of(InvocationContextImpl.Factory.currentInstance().sessionTid().orElse(DapengUtil.generateTid()));
     }
 
     @Override
@@ -34,7 +33,7 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
         HttpServletRequest request = InvokeUtil.getHttpRequest();
 
         if (request == null) {
-            return Optional.of(IPUtils.transferIp(IPUtils.localIp()));
+            return Optional.of(IPUtils.localIpAsInt());
         }
 
         String ip = InvokeUtil.getIpAddress(request);
