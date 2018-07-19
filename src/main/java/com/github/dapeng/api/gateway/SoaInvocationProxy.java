@@ -26,7 +26,7 @@ public class SoaInvocationProxy implements InvocationContext.InvocationContextPr
 
     @Override
     public Optional<Long> sessionTid() {
-        return Optional.of(DapengUtil.generateTid());
+        return Optional.of(InvocationContextImpl.Factory.currentInstance().sessionTid().orElse(DapengUtil.generateTid()));
     }
 
     @Override
