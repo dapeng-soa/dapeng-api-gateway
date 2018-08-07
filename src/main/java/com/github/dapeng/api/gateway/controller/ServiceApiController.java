@@ -34,6 +34,8 @@ public class ServiceApiController {
                        @RequestParam(value = "methodName") String methodName,
                        @RequestParam(value = "parameter") String parameter,
                        HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
@@ -44,6 +46,8 @@ public class ServiceApiController {
                         @PathVariable(value = "methodName") String methodName,
                         @RequestParam(value = "parameter") String parameter,
                         HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
@@ -54,6 +58,8 @@ public class ServiceApiController {
                         @PathVariable(value = "methodName") String methodName,
                         @RequestParam(value = "parameter") String parameter,
                         HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
         return PostUtil.post(serviceName, version, methodName, parameter, req);
     }
 
