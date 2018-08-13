@@ -71,7 +71,7 @@ public class ServiceApiController {
                            @RequestParam(value = "methodName") String methodName,
                            @RequestParam(value = "parameter") String parameter,
                            @RequestParam(value = "timestamp") String timestamp,
-                           @RequestParam(value = "secret") String secret,
+                           @RequestParam(value = "secret", required = false) String secret,
                            @RequestParam(value = "secret2", required = false) String secret2,
                            HttpServletRequest req) {
         return proccessRequest(serviceName,
@@ -85,7 +85,7 @@ public class ServiceApiController {
                             @PathVariable(value = "apiKey") String apiKey,
                             @RequestParam(value = "parameter") String parameter,
                             @RequestParam(value = "timestamp") String timestamp,
-                            @RequestParam(value = "secret") String secret,
+                            @RequestParam(value = "secret", required = false) String secret,
                             @RequestParam(value = "secret2", required = false) String secret2,
                             HttpServletRequest req) {
         return proccessRequest(serviceName,
@@ -165,7 +165,7 @@ public class ServiceApiController {
         String ip = request == null ? IPUtils.localIp() : InvokeUtil.getIpAddress(request);
         CheckGateWayAuthRequest checkGateWayAuthRequest = new CheckGateWayAuthRequest();
         checkGateWayAuthRequest.setApiKey(apiKey);
-        checkGateWayAuthRequest.setSecret(secret);
+        checkGateWayAuthRequest.setSecret(Optional.ofNullable(secret));
         checkGateWayAuthRequest.setTimestamp(timestamp);
         checkGateWayAuthRequest.setInvokeIp(ip);
         checkGateWayAuthRequest.setParameter(Optional.ofNullable(parameter));
