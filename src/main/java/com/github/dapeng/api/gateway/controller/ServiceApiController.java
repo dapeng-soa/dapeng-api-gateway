@@ -72,9 +72,10 @@ public class ServiceApiController {
                            @RequestParam(value = "parameter") String parameter,
                            @RequestParam(value = "timestamp") String timestamp,
                            @RequestParam(value = "secret") String secret,
+                           @RequestParam(value = "secret2", required = false) String secret2,
                            HttpServletRequest req) {
         return proccessRequest(serviceName,
-                version, methodName, apiKey, parameter, timestamp, secret, req);
+                version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
     }
 
     @PostMapping(value = "/{serviceName}/{version}/{methodName}/{apiKey}")
@@ -85,9 +86,10 @@ public class ServiceApiController {
                             @RequestParam(value = "parameter") String parameter,
                             @RequestParam(value = "timestamp") String timestamp,
                             @RequestParam(value = "secret") String secret,
+                            @RequestParam(value = "secret2", required = false) String secret2,
                             HttpServletRequest req) {
         return proccessRequest(serviceName,
-                version, methodName, apiKey, parameter, timestamp, secret, req);
+                version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
 
     }
 
@@ -141,9 +143,10 @@ public class ServiceApiController {
                                    String parameter,
                                    String timestamp,
                                    String secret,
+                                   String secret2,
                                    HttpServletRequest req) {
         try {
-            checkSecret(serviceName, apiKey, secret, timestamp);
+            checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
             return PostUtil.post(serviceName, version, methodName, parameter, req);
         } catch (SoaException e) {
             HttpServletRequest request1 = InvokeUtil.getHttpRequest();
@@ -153,7 +156,7 @@ public class ServiceApiController {
     }
 
 
-    private void checkSecret(String serviceName, String apiKey, String secret, String timestamp) throws SoaException {
+    private void checkSecret(String serviceName, String apiKey, String secret, String timestamp, String parameter, String secret2) throws SoaException {
         Set<String> list = WhiteListUtil.getServiceWhiteList();
         if (null == list || !list.contains(serviceName)) {
             throw new SoaException("Err-GateWay-006", "非法请求,请联系管理员!");
@@ -165,6 +168,8 @@ public class ServiceApiController {
         checkGateWayAuthRequest.setSecret(secret);
         checkGateWayAuthRequest.setTimestamp(timestamp);
         checkGateWayAuthRequest.setInvokeIp(ip);
+        checkGateWayAuthRequest.setParameter(Optional.ofNullable(parameter));
+        checkGateWayAuthRequest.setSecret2(Optional.ofNullable(secret2));
         adminService.checkGateWayAuth(checkGateWayAuthRequest);
     }
 }
