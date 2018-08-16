@@ -5,6 +5,7 @@ import com.github.dapeng.api.gateway.util.WhiteListUtil;
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.metadata.Service;
+import com.github.dapeng.echo.EchoClient;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
 import com.today.api.admin.OpenAdminServiceClient;
@@ -91,6 +92,18 @@ public class ServiceApiController {
         return proccessRequest(serviceName,
                 version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
 
+    }
+
+      /**
+       * 调用指定服务的echo方法，判断服务是否健康
+       * @param   serviceName 服务名
+       * @param   version 服务版本号
+       * @return
+       */
+    @GetMapping(value = "/echo/{service}/{version}")
+    public String echo(@PathVariable(value = "service") String serviceName,
+                       @PathVariable(value = "version") String version) throws SoaException {
+        return new EchoClient(serviceName, version).echo();
     }
 
     /**
