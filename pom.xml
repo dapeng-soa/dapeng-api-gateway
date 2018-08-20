@@ -135,7 +135,7 @@
                 <version>0.4.10</version>
                 <configuration>
                     <!--<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.2-authority</imageName>-->
-                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.4</imageName>
+                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.4-async</imageName>
                     <dockerDirectory>${basedir}/docker</dockerDirectory>
                 </configuration>
                 <executions>
