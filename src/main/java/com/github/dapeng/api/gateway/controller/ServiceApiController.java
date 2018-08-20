@@ -15,9 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author struy
@@ -27,43 +30,53 @@ import java.util.*;
 public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
 
 
     @PostMapping(value = "/{apiKey}")
-    public String authRest(@PathVariable(value = "apiKey") String apiKey,
-                           @RequestParam(value = "serviceName") String serviceName,
-                           @RequestParam(value = "version") String version,
-                           @RequestParam(value = "methodName") String methodName,
-                           @RequestParam(value = "parameter") String parameter,
-                           @RequestParam(value = "timestamp") String timestamp,
-                           @RequestParam(value = "secret", required = false) String secret,
-                           @RequestParam(value = "secret2", required = false) String secret2,
-                           HttpServletRequest req) {
-        return proccessRequest(serviceName,
+    public DeferredResult<String> authRest(@PathVariable(value = "apiKey") String apiKey,
+                                           @RequestParam(value = "serviceName") String serviceName,
+                                           @RequestParam(value = "version") String version,
+                                           @RequestParam(value = "methodName") String methodName,
+                                           @RequestParam(value = "parameter") String parameter,
+                                           @RequestParam(value = "timestamp") String timestamp,
+                                           @RequestParam(value = "secret", required = false) String secret,
+                                           @RequestParam(value = "secret2", required = false) String secret2,
+                                           HttpServletRequest req) {
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+
+        proccessRequest(deferredResult, serviceName,
                 version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
+
+        return deferredResult;
     }
 
     @PostMapping(value = "/{serviceName}/{version}/{methodName}/{apiKey}")
-    public String authRest1(@PathVariable(value = "serviceName") String serviceName,
-                            @PathVariable(value = "version") String version,
-                            @PathVariable(value = "methodName") String methodName,
-                            @PathVariable(value = "apiKey") String apiKey,
-                            @RequestParam(value = "parameter") String parameter,
-                            @RequestParam(value = "timestamp") String timestamp,
-                            @RequestParam(value = "secret", required = false) String secret,
-                            @RequestParam(value = "secret2", required = false) String secret2,
-                            HttpServletRequest req) {
-        return proccessRequest(serviceName,
+    public DeferredResult<String> authRest1(@PathVariable(value = "serviceName") String serviceName,
+                                            @PathVariable(value = "version") String version,
+                                            @PathVariable(value = "methodName") String methodName,
+                                            @PathVariable(value = "apiKey") String apiKey,
+                                            @RequestParam(value = "parameter") String parameter,
+                                            @RequestParam(value = "timestamp") String timestamp,
+                                            @RequestParam(value = "secret", required = false) String secret,
+                                            @RequestParam(value = "secret2", required = false) String secret2,
+                                            HttpServletRequest req) {
+
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+        proccessRequest(deferredResult, serviceName,
                 version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
+
+        return deferredResult;
 
     }
 
-      /**
-       * 调用指定服务的echo方法，判断服务是否健康
-       * @param   serviceName 服务名
-       * @param   version 服务版本号
-       * @return
-       */
+    /**
+     * 调用指定服务的echo方法，判断服务是否健康
+     *
+     * @param serviceName 服务名
+     * @param version     服务版本号
+     * @return
+     */
     @GetMapping(value = "/echo/{service}/{version}")
     public String echo(@PathVariable(value = "service") String serviceName,
                        @PathVariable(value = "version") String version) throws SoaException {
@@ -78,7 +91,7 @@ public class ServiceApiController {
     @GetMapping(value = "/list")
     public ResponseEntity<?> list() {
         Map<String, Service> services = ServiceCache.getServices();
-        List<String> list = new ArrayList(16);
+        List<String> list = new ArrayList<>(16);
         services.forEach((k, v) -> {
             list.add(v.namespace + "." + v.name + ":" + v.meta.version);
         });
@@ -113,23 +126,26 @@ public class ServiceApiController {
      * @param req
      * @return
      */
-    private String proccessRequest(String serviceName,
-                                   String version,
-                                   String methodName,
-                                   String apiKey,
-                                   String parameter,
-                                   String timestamp,
-                                   String secret,
-                                   String secret2,
-                                   HttpServletRequest req) {
-        try {
-            checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
-            return PostUtil.post(serviceName, version, methodName, parameter, req);
-        } catch (SoaException e) {
-            HttpServletRequest request1 = InvokeUtil.getHttpRequest();
-            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
-            return String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}");
-        }
+    private void proccessRequest(DeferredResult<String> deferredResult,
+                                 String serviceName,
+                                 String version,
+                                 String methodName,
+                                 String apiKey,
+                                 String parameter,
+                                 String timestamp,
+                                 String secret,
+                                 String secret2,
+                                 HttpServletRequest req) {
+        executorService.execute(() -> {
+            try {
+                checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
+                deferredResult.setResult(PostUtil.post(serviceName, version, methodName, parameter, req));
+            } catch (SoaException e) {
+                HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+                LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
+                deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}"));
+            }
+        });
     }
 
 
