@@ -35,7 +35,8 @@
         <dependency>
             <groupId>com.github.dapeng</groupId>
             <artifactId>dapeng-open-api</artifactId>
-            <version>${dapeng.version}</version>
+            <!--<version>${dapeng.version}</version>-->
+            <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.dapeng</groupId>

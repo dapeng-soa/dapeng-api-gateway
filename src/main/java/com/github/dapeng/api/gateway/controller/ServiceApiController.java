@@ -2,6 +2,7 @@ package com.github.dapeng.api.gateway.controller;
 
 import com.github.dapeng.api.gateway.util.InvokeUtil;
 import com.github.dapeng.api.gateway.util.WhiteListUtil;
+import com.github.dapeng.core.SoaCode;
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.metadata.Service;
@@ -19,8 +20,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author struy
@@ -30,8 +30,35 @@ import java.util.concurrent.Executors;
 public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
 
+    @Deprecated
+    @PostMapping
+    public DeferredResult<String> rest(@RequestParam(value = "serviceName") String serviceName,
+                                       @RequestParam(value = "version") String version,
+                                       @RequestParam(value = "methodName") String methodName,
+                                       @RequestParam(value = "parameter") String parameter,
+                                       HttpServletRequest req) {
+        LOGGER.info("begin to process request using deferredResult async");
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+
+        proccessNoAuthRequest(deferredResult, serviceName, version, methodName, parameter, req);
+
+
+        return deferredResult;
+    }
+
+    @Deprecated
+    @PostMapping(value = "/{serviceName}/{version}/{methodName}")
+    public DeferredResult<String> rest1(@PathVariable(value = "serviceName") String serviceName,
+                                        @PathVariable(value = "version") String version,
+                                        @PathVariable(value = "methodName") String methodName,
+                                        @RequestParam(value = "parameter") String parameter,
+                                        HttpServletRequest req) {
+        LOGGER.info("begin to process request using deferredResult async");
+        DeferredResult<String> deferredResult = new DeferredResult<>();
+        proccessNoAuthRequest(deferredResult, serviceName, version, methodName, parameter, req);
+        return deferredResult;
+    }
 
     @PostMapping(value = "/{apiKey}")
     public DeferredResult<String> authRest(@PathVariable(value = "apiKey") String apiKey,
@@ -43,8 +70,8 @@ public class ServiceApiController {
                                            @RequestParam(value = "secret", required = false) String secret,
                                            @RequestParam(value = "secret2", required = false) String secret2,
                                            HttpServletRequest req) {
+        LOGGER.info("begin to process request using deferredResult async");
         DeferredResult<String> deferredResult = new DeferredResult<>();
-
         proccessRequest(deferredResult, serviceName,
                 version, methodName, apiKey, parameter, timestamp, secret, secret2, req);
 
@@ -136,14 +163,38 @@ public class ServiceApiController {
                                  String secret,
                                  String secret2,
                                  HttpServletRequest req) {
-        executorService.execute(() -> {
-            try {
-                checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
-                deferredResult.setResult(PostUtil.post(serviceName, version, methodName, parameter, req));
-            } catch (SoaException e) {
-                HttpServletRequest request1 = InvokeUtil.getHttpRequest();
-                LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
-                deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}"));
+        try {
+            checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
+            CompletableFuture<String> jsonResponse = (CompletableFuture<String>) PostUtil.postAsync(serviceName, version, methodName, parameter, req);
+            jsonResponse.whenComplete((result, ex) -> {
+                if (ex != null) {
+                    deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
+                } else {
+                    String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
+                    deferredResult.setResult(response);
+                }
+            });
+        } catch (SoaException e) {
+            HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
+            deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}"));
+        }
+    }
+
+
+    private void proccessNoAuthRequest(DeferredResult<String> deferredResult,
+                                       String serviceName,
+                                       String version,
+                                       String methodName,
+                                       String parameter,
+                                       HttpServletRequest req) {
+        CompletableFuture<String> jsonResponse = (CompletableFuture<String>) PostUtil.postAsync(serviceName, version, methodName, parameter, req);
+        jsonResponse.whenComplete((result, ex) -> {
+            if (ex != null) {
+                deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
+            } else {
+                String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
+                deferredResult.setResult(response);
             }
         });
     }
