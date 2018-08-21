@@ -28,6 +28,38 @@ public class ServiceApiController {
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceApiController.class);
     private final OpenAdminServiceClient adminService = new OpenAdminServiceClient();
 
+    @PostMapping
+    public String rest(@RequestParam(value = "serviceName") String serviceName,
+                       @RequestParam(value = "version") String version,
+                       @RequestParam(value = "methodName") String methodName,
+                       @RequestParam(value = "parameter") String parameter,
+                       HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
+
+    @PostMapping(value = "/{serviceName}/{version}/{methodName}")
+    public String rest1(@PathVariable(value = "serviceName") String serviceName,
+                        @PathVariable(value = "version") String version,
+                        @PathVariable(value = "methodName") String methodName,
+                        @RequestParam(value = "parameter") String parameter,
+                        HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
+
+    @PostMapping(value = "/{serviceName}/{version}/{methodName}.html")
+    public String rest2(@PathVariable(value = "serviceName") String serviceName,
+                        @PathVariable(value = "version") String version,
+                        @PathVariable(value = "methodName") String methodName,
+                        @RequestParam(value = "parameter") String parameter,
+                        HttpServletRequest req) {
+        HttpServletRequest request1 = InvokeUtil.getHttpRequest();
+        LOGGER.warn("apiGateWay Deprecated method:: Invoke ip [ {} ]  call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), serviceName, version, methodName, InvokeUtil.getCookies());
+        return PostUtil.post(serviceName, version, methodName, parameter, req);
+    }
 
     @PostMapping(value = "/{apiKey}")
     public String authRest(@PathVariable(value = "apiKey") String apiKey,
