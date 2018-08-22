@@ -163,22 +163,17 @@ public class ServiceApiController {
                                  String secret,
                                  String secret2,
                                  HttpServletRequest req) {
-        try {
-            checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
-            CompletableFuture<String> jsonResponse = (CompletableFuture<String>) PostUtil.postAsync(serviceName, version, methodName, parameter, req);
-            jsonResponse.whenComplete((result, ex) -> {
-                if (ex != null) {
-                    deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
-                } else {
-                    String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
-                    deferredResult.setResult(response);
-                }
-            });
-        } catch (SoaException e) {
-            HttpServletRequest request1 = InvokeUtil.getHttpRequest();
-            LOGGER.error("request failed:: Invoke ip [ {} ] apiKey:[ {} ] call timestamp:[{}] call[ {}:{}:{} ] cookies:[{}] -> ", null != request1 ? InvokeUtil.getIpAddress(request1) : IPUtils.localIp(), apiKey, timestamp, serviceName, version, methodName, InvokeUtil.getCookies(), e);
-            deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", e.getCode(), e.getMsg(), "{}"));
-        }
+//            checkSecret(serviceName, apiKey, secret, timestamp, parameter, secret2);
+        CompletableFuture<String> jsonResponse = (CompletableFuture<String>) PostUtil.postAsync(serviceName, version, methodName, parameter, req);
+        jsonResponse.whenComplete((result, ex) -> {
+            if (ex != null) {
+                deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
+            } else {
+                String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
+                deferredResult.setResult(response);
+            }
+        });
+
     }
 
 
@@ -193,6 +188,11 @@ public class ServiceApiController {
             if (ex != null) {
                 deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
             } else {
+
+                if (result.contains("status")) {
+                    deferredResult.setResult(result);
+                    return;
+                }
                 String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
                 deferredResult.setResult(response);
             }

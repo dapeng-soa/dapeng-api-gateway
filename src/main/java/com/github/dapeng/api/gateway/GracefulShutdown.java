@@ -3,6 +3,8 @@ package com.github.dapeng.api.gateway;
 import com.github.dapeng.api.gateway.controller.HealthCheckController;
 import com.github.dapeng.api.gateway.util.ContainerStatus;
 import org.apache.catalina.connector.Connector;
+import org.apache.coyote.ProtocolHandler;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
@@ -31,7 +33,16 @@ public class GracefulShutdown implements TomcatConnectorCustomizer, ApplicationL
 
     @Override
     public void customize(Connector connector) {
+
+        int cpus = Runtime.getRuntime().availableProcessors();
         this.connector = connector;
+        Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
+        //设置最大连接数
+//        protocol.setMaxConnections(2000);
+        //设置最大线程数
+//        protocol.setMaxThreads();
+        protocol.setMinSpareThreads(cpus);
+//        protocol.setConnectionTimeout(30000);
     }
 
     /**
