@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <dapeng.version>2.0.4</dapeng.version>
+        <dapeng.version>2.0.5</dapeng.version>
         <admin-api.version>0.3.3-SNAPSHOT</admin-api.version>
     </properties>
 
@@ -135,7 +135,7 @@
                 <version>0.4.10</version>
                 <configuration>
                     <!--<imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.2-authority</imageName>-->
-                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.4</imageName>
+                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-api-gateway:2.0.5</imageName>
                     <dockerDirectory>${basedir}/docker</dockerDirectory>
                 </configuration>
                 <executions>
