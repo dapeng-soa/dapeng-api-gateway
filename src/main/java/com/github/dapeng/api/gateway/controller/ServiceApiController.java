@@ -169,6 +169,11 @@ public class ServiceApiController {
             if (ex != null) {
                 deferredResult.setResult(String.format("{\"responseCode\":\"%s\", \"responseMsg\":\"%s\", \"success\":\"%s\", \"status\":0}", SoaCode.ServerUnKnown.getCode(), ex.getMessage(), "{}"));
             } else {
+
+                if (result.contains("status")) {
+                    deferredResult.setResult(result);
+                    return;
+                }
                 String response = "{}".equals(result) ? "{\"status\":1}" : result.substring(0, result.lastIndexOf('}')) + ",\"status\":1}";
                 deferredResult.setResult(response);
             }
