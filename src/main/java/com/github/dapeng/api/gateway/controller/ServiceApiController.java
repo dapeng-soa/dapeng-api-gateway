@@ -6,10 +6,12 @@ import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.echo.EchoClient;
+import com.github.dapeng.json.OptimizedMetadata;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import com.github.dapeng.openapi.utils.PostUtil;
 import com.today.api.admin.OpenAdminServiceClient;
 import com.today.api.admin.request.CheckGateWayAuthRequest;
+import com.today.api.admin.scala.service.OpenAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -77,10 +79,10 @@ public class ServiceApiController {
      */
     @GetMapping(value = "/list")
     public ResponseEntity<?> list() {
-        Map<String, Service> services = ServiceCache.getServices();
+        Collection<OptimizedMetadata.OptimizedService> services = ServiceCache.getServices().values();
         List<String> list = new ArrayList(16);
-        services.forEach((k, v) -> {
-            list.add(v.namespace + "." + v.name + ":" + v.meta.version);
+        services.forEach(service -> {
+            list.add(service.getService().namespace + "." + service.getService().name + ":" + service.getService().meta.version);
         });
         return ResponseEntity
                 .status(HttpStatus.OK)
